@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Phủ định của phủ định: học và ôn tập</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF3E8; --surface:#FFFFFF; --surface-2:#F7FAF3; --ink:#1F3326; --muted:#566B5C;
+  --paddy:#4A7C31; --paddy-soft:#DCEACF; --grain:#C9860F; --grain-bright:#E9A92A; --grain-soft:#F7E5B8;
+  --red:#B4432D; --red-soft:#F6DDD6; --line:#CFDAC6; --guide:#B8C7AD;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121E17; --surface:#1A2A21; --surface-2:#1F3127; --ink:#E4EDDD; --muted:#9FB3A4;
+    --paddy:#8BC066; --paddy-soft:#26402D; --grain:#F0B43E; --grain-bright:#F6C65E; --grain-soft:#3B3117;
+    --red:#EA846C; --red-soft:#43231C; --line:#2F4538; --guide:#3C5546;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121E17; --surface:#1A2A21; --surface-2:#1F3127; --ink:#E4EDDD; --muted:#9FB3A4;
+  --paddy:#8BC066; --paddy-soft:#26402D; --grain:#F0B43E; --grain-bright:#F6C65E; --grain-soft:#3B3117;
+  --red:#EA846C; --red-soft:#43231C; --line:#2F4538; --guide:#3C5546;
+  color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:'Be Vietnam Pro',system-ui,-apple-system,'Segoe UI',Roboto,Arial,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:'Fraunces',Georgia,'Times New Roman',serif;font-weight:800;line-height:1.12;margin:0;letter-spacing:-.01em}
+h2{font-size:clamp(1.7rem,3.6vw,2.4rem);margin-bottom:.6rem}
+h3{font-size:1.2rem;font-weight:600}
+p{margin:0 0 .9rem}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--grain);outline-offset:2px;border-radius:6px}
+svg{max-width:100%;height:auto;display:block}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.muted{color:var(--muted)}
+
+/* top bar */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:30;background:var(--bg);border-bottom:1px solid var(--line)}
+.topbar .wrap{display:flex;align-items:center;justify-content:space-between;gap:12px;height:62px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:15px;text-decoration:none;color:var(--ink);min-width:0}
+.brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.brand svg{width:30px;flex:none}
+.tabs{display:flex;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px;flex:none}
+.tabs a{padding:7px 16px;border-radius:999px;text-decoration:none;color:var(--muted);font-weight:600;font-size:15px;white-space:nowrap}
+.tabs a[aria-current="page"]{background:var(--ink);color:var(--bg)}
+@media (max-width:560px){.brand span{display:none}.tabs a{padding:7px 13px}}
+
+.page{display:none}
+body[data-page="theory"] #theory, body[data-page="game"] #game{display:block}
+
+/* hero */
+.hero{padding:44px 0 30px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:36px;align-items:start}
+@media (max-width:880px){.hero-grid{grid-template-columns:1fr;gap:18px}}
+.hero h1{font-size:clamp(2.4rem,6vw,4.2rem);margin-bottom:16px}
+.lead{font-size:1.1rem;max-width:34em}
+.stage-card{margin-top:22px;background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--grain);border-radius:14px;padding:18px 20px;min-height:178px}
+.stage-tag{display:inline-block;font-size:13px;font-weight:700;color:var(--paddy);background:var(--paddy-soft);padding:3px 10px;border-radius:999px;margin-bottom:8px}
+.stage-card h3{font-size:1.45rem;margin-bottom:6px}
+.stage-card p{margin:0}
+.spiral-box{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:14px 14px 16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:6px}
+.chip{border:1px solid var(--line);background:var(--surface-2);border-radius:999px;padding:6px 14px;font-size:14px;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--paddy);border-color:var(--paddy);color:#fff}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:4px;flex-wrap:wrap}
+.dots{display:flex;gap:6px}
+.dot{width:30px;height:30px;border-radius:50%;border:2px solid var(--guide);background:transparent;font-size:12px;font-weight:700;color:var(--muted);padding:0}
+.dot.on{background:var(--grain);border-color:var(--grain);color:#2b1d00}
+.btn{border:none;border-radius:12px;padding:11px 18px;font-weight:700;font-size:15px;background:var(--ink);color:var(--bg)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btn.grain{background:var(--grain);color:#2b1d00}
+.btn.paddy{background:var(--paddy);color:#fff}
+.hint{font-size:13px;color:var(--muted);margin:8px 2px 0}
+
+/* sections */
+section.block{padding:52px 0;border-top:1px solid var(--line)}
+.sec-intro{max-width:44em;margin-bottom:24px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start}
+@media (max-width:820px){.two{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+
+.laws{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:22px}
+@media (max-width:700px){.laws{grid-template-columns:1fr}}
+.law{border:1.5px dashed var(--guide);border-radius:14px;padding:14px 16px;color:var(--muted)}
+.law b{display:block;color:var(--ink);font-size:15px}
+.law.me{border:2px solid var(--grain);background:var(--grain-soft);color:var(--ink)}
+.seg{display:inline-flex;flex-wrap:wrap;gap:6px;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;padding:5px;margin-bottom:14px}
+.seg button{border:none;background:transparent;border-radius:9px;padding:8px 14px;font-weight:600;font-size:15px;color:var(--muted)}
+.seg button[aria-selected="true"]{background:var(--surface);color:var(--ink);box-shadow:0 0 0 1.5px var(--ink)}
+.aspect-out{display:flex;gap:18px;align-items:center}
+.aspect-out svg{width:120px;flex:none}
+@media (max-width:520px){.aspect-out{flex-direction:column;align-items:flex-start}}
+
+.toggle{display:flex;gap:0;border:1.5px solid var(--ink);border-radius:12px;overflow:hidden;margin-bottom:16px;width:max-content;max-width:100%}
+.toggle button{border:none;background:transparent;padding:9px 16px;font-weight:700;font-size:15px}
+.toggle button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.neg-vis{background:var(--surface-2);border-radius:12px;padding:10px;margin-bottom:12px}
+
+.feat-body{display:grid;grid-template-columns:1.2fr .8fr;gap:18px}
+@media (max-width:720px){.feat-body{grid-template-columns:1fr}}
+.ex{background:var(--paddy-soft);border-radius:12px;padding:14px 16px;font-size:15.5px}
+.ex b{display:block;font-size:13px;color:var(--paddy);margin-bottom:2px}
+
+/* inheritance lab */
+.lab-modes{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:16px}
+.old-box{border:2px solid var(--ink);border-radius:14px;padding:12px 14px;margin-bottom:14px;background:var(--surface)}
+.old-box h3,.new-box h3{font-size:1rem;margin-bottom:8px;font-family:'Be Vietnam Pro',sans-serif;font-weight:700}
+.pills{display:flex;flex-wrap:wrap;gap:8px;min-height:36px}
+.pill{border-radius:999px;padding:5px 12px;font-size:14.5px;font-weight:600;background:var(--surface-2);border:1px solid var(--line);animation:pop .4s ease both}
+.pill.keep{background:var(--paddy-soft);border-color:var(--paddy)}
+.pill.fix{background:var(--grain-soft);border-color:var(--grain)}
+.pill.drop{background:var(--red-soft);border-color:var(--red);text-decoration:line-through;text-decoration-color:var(--red)}
+.pill.add{background:var(--surface);border:1.5px dashed var(--paddy)}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.94)}to{opacity:1;transform:none}}
+.bins{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}
+@media (max-width:640px){.bins{grid-template-columns:1fr}}
+.bin{border-radius:14px;padding:12px;min-height:110px;background:var(--surface);border:1px solid var(--line)}
+.bin h4{margin:0 0 8px;font-size:14px}
+.bin.k h4{color:var(--paddy)} .bin.f h4{color:var(--grain)} .bin.d h4{color:var(--red)}
+.new-box{border:2px solid var(--paddy);border-radius:14px;padding:12px 14px;background:var(--surface)}
+.verdict{margin-top:12px;padding:12px 14px;border-radius:12px;font-weight:600;font-size:15.5px}
+.verdict.good{background:var(--paddy-soft)} .verdict.bad{background:var(--red-soft)}
+.formula{font-weight:700;font-size:15px;margin-top:10px}
+
+blockquote{margin:18px 0 0;padding:16px 20px;border-left:5px solid var(--grain);background:var(--surface);border-radius:0 12px 12px 0;font-family:'Fraunces',Georgia,serif;font-size:1.12rem;line-height:1.5}
+blockquote cite{display:block;margin-top:8px;font-family:'Be Vietnam Pro',sans-serif;font-style:normal;font-size:14px;color:var(--muted)}
+.traits{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.traits span{padding:5px 12px;border-radius:999px;background:var(--grain-soft);font-weight:700;font-size:14px}
+
+.steps{list-style:none;margin:0;padding:0;display:grid;gap:12px;counter-reset:s}
+.steps li{position:relative;padding:14px 16px 14px 62px;background:var(--surface);border:1px solid var(--line);border-radius:14px;counter-increment:s}
+.steps li::before{content:counter(s);position:absolute;left:16px;top:14px;width:32px;height:32px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:15px}
+.why{display:grid;gap:12px}
+.why .panel h3{margin-bottom:6px}
+
+.meaning{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+@media (max-width:720px){.meaning{grid-template-columns:1fr}}
+.meaning details{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.meaning summary{font-weight:700;cursor:pointer;list-style:none;display:flex;gap:10px;align-items:baseline}
+.meaning summary::-webkit-details-marker{display:none}
+.meaning summary::after{content:"+";margin-left:auto;font-size:20px;color:var(--muted);line-height:1}
+.meaning details[open] summary::after{content:"–"}
+.meaning details p{margin:10px 0 0;font-size:15.5px}
+.meaning .n{font-family:'Fraunces',serif;color:var(--grain);font-size:1.2rem}
+.lessons{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:780px){.lessons{grid-template-columns:1fr}}
+.lesson{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.lesson h3{margin-bottom:10px}
+.dont{display:grid;gap:8px;margin-top:6px}
+.dont div{border-radius:10px;padding:9px 12px;font-size:15px}
+.dont .x{background:var(--red-soft)} .dont .v{background:var(--paddy-soft)}
+.apply{background:var(--ink);color:var(--bg);border-radius:20px;padding:30px;display:grid;grid-template-columns:1.4fr .6fr;gap:24px;align-items:center}
+.apply h2{color:var(--bg)}
+.apply p{opacity:.9}
+@media (max-width:760px){.apply{grid-template-columns:1fr}}
+footer{padding:30px 0 50px;color:var(--muted);font-size:14px}
+
+/* ===== GAME ===== */
+.g-head{padding:36px 0 10px}
+.g-head h1{font-size:clamp(2rem,5vw,3.2rem);margin-bottom:8px}
+.modes{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 0 50px}
+@media (max-width:760px){.modes{grid-template-columns:1fr}}
+.mode{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px;display:flex;flex-direction:column;gap:10px}
+.mode h2{font-size:1.6rem;margin:0}
+.mode .best{font-size:14px;color:var(--muted)}
+.mode .btn{align-self:flex-start;margin-top:auto}
+.mode svg{width:84px}
+
+.arena{display:none;padding:22px 0 50px}
+.hud{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.hud .stat{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px 12px;font-size:14px;font-weight:600}
+.hud .stat b{font-size:16px}
+.hud .quit{margin-left:auto}
+.timer{height:8px;background:var(--line);border-radius:999px;overflow:hidden;margin-bottom:16px}
+.timer i{display:block;height:100%;width:100%;background:var(--paddy);transform-origin:left;transition:background .3s}
+.timer i.low{background:var(--red)}
+.climb-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:22px;align-items:start}
+@media (max-width:860px){.climb-grid{grid-template-columns:1fr}.climb-side{order:-1}.climb-side svg{max-height:170px;width:auto;margin:0 auto}}
+.qcard{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:22px}
+.qtype{font-size:13px;font-weight:700;color:var(--paddy);margin-bottom:6px}
+.qtext{font-size:1.25rem;font-weight:700;line-height:1.4;margin-bottom:16px}
+.opts{display:grid;gap:10px}
+.opt{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1.5px solid var(--line);background:var(--surface-2);border-radius:14px;padding:12px 14px;font-size:16px;font-weight:500;width:100%}
+.opt .k{flex:none;width:26px;height:26px;border-radius:8px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-weight:700;font-size:13px}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{border-color:var(--paddy);background:var(--paddy-soft)}
+.opt.wrong{border-color:var(--red);background:var(--red-soft)}
+.tf{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tf .opt{justify-content:center;font-size:1.15rem;font-weight:700;padding:20px}
+.sort-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:10px 12px;border:1.5px solid var(--line);border-radius:12px;margin-bottom:8px;background:var(--surface-2)}
+.sort-row span{font-weight:600}
+.sort-row.right{border-color:var(--paddy)} .sort-row.wrong{border-color:var(--red);background:var(--red-soft)}
+.sort-row .seg{margin:0}
+.sort-row .seg button{padding:6px 11px;font-size:14px}
+.order-pool,.order-ans{display:flex;flex-direction:column;gap:8px}
+.order-ans{min-height:60px;border:2px dashed var(--guide);border-radius:14px;padding:10px;margin-bottom:12px}
+.order-ans:empty::before{content:"Chạm vào các thẻ bên dưới theo đúng thứ tự";color:var(--muted);font-size:14px;padding:8px}
+.oitem{text-align:left;border:1.5px solid var(--line);background:var(--surface-2);border-radius:12px;padding:10px 12px;font-weight:600;font-size:15.5px;display:flex;gap:10px;align-items:center}
+.oitem .k{flex:none;width:24px;height:24px;border-radius:50%;background:var(--ink);color:var(--bg);display:grid;place-items:center;font-size:12px}
+.oitem.right{border-color:var(--paddy);background:var(--paddy-soft)} .oitem.wrong{border-color:var(--red);background:var(--red-soft)}
+.q-actions{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+.feedback{margin-top:16px;border-radius:14px;padding:14px 16px;animation:pop .35s ease both}
+.feedback.good{background:var(--paddy-soft)} .feedback.bad{background:var(--red-soft)}
+.feedback strong{display:block;font-size:1.05rem;margin-bottom:4px}
+.feedback p{margin:0 0 10px;font-size:15.5px}
+.climb-side{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:12px}
+.climb-side p{font-size:13px;color:var(--muted);text-align:center;margin:6px 0 0}
+.toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:12px;font-weight:600;font-size:15px;z-index:50;max-width:calc(100% - 32px);text-align:center;opacity:0;transition:opacity .25s;pointer-events:none}
+.toast.show{opacity:1}
+.overlay{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:34px 26px;text-align:center;animation:pop .4s ease both}
+.overlay h2{font-size:clamp(1.8rem,5vw,2.6rem)}
+.overlay .big{font-family:'Fraunces',serif;font-size:3.4rem;font-weight:800;color:var(--grain);line-height:1}
+.review{text-align:left;max-width:640px;margin:22px auto 0;display:grid;gap:10px}
+.review div{background:var(--surface-2);border-radius:12px;padding:12px 14px;font-size:15px}
+.review b{display:block}
+.center-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+
+.match-grid{display:grid;grid-template-columns:.8fr 1.2fr;gap:12px}
+.match-col{display:flex;flex-direction:column;gap:10px}
+.mcard{border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:12px;text-align:left;font-size:15px;font-weight:600;min-height:58px}
+.match-col.terms .mcard{font-family:'Fraunces',serif;font-size:16.5px}
+.mcard.sel{border-color:var(--grain);box-shadow:0 0 0 2px var(--grain)}
+.mcard.done{background:var(--paddy-soft);border-color:var(--paddy);opacity:.75;cursor:default}
+.mcard.shake{animation:shake .35s;border-color:var(--red);background:var(--red-soft)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+@media (max-width:520px){.mcard{font-size:13.5px;padding:10px}.match-col.terms .mcard{font-size:14.5px}}
+</style>
+</head>
+<body data-page="theory">
+
+<header class="topbar">
+  <div class="wrap">
+    <a class="brand" href="#ly-thuyet">
+      <svg viewBox="0 0 40 40" aria-hidden="true"><path d="M6 34c8 4 26 4 28-2s-24-4-26-10 18-8 24-6-4 8-14 4" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="18" cy="18" r="3.6" fill="#E9A92A"/></svg>
+      <span>Phủ định của phủ định</span>
+    </a>
+    <nav class="tabs" aria-label="Chuyển trang">
+      <a href="#ly-thuyet" data-nav="theory">Lý thuyết</a>
+      <a href="#on-tap" data-nav="game">Ôn tập</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ================= THEORY ================= -->
+<main id="theory" class="page">
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <h1>Phủ định của phủ định</h1>
+        <p class="lead">Sự vật mới ra đời từ chính sự vật cũ, phát triển từ thấp đến cao. Nhưng con đường ấy không thẳng: nó cuộn lên như một đường xoáy ốc. Bấm <b>Phủ định tiếp</b> để xem một hạt thóc đi hết một chu kỳ.</p>
+        <div class="stage-card" aria-live="polite">
+          <span class="stage-tag" id="stTag"></span>
+          <h3 id="stTitle"></h3>
+          <p id="stDesc"></p>
+        </div>
+      </div>
+      <div class="spiral-box">
+        <div class="chips" role="group" aria-label="Chọn ví dụ" id="exChips"></div>
+        <svg id="heroSvg" viewBox="0 0 520 440" role="img" aria-label="Đường xoáy ốc của sự phát triển"></svg>
+        <div class="stepper">
+          <button class="btn ghost" id="prevBtn">Lùi lại</button>
+          <div class="dots" id="dots"></div>
+          <button class="btn grain" id="nextBtn">Phủ định tiếp</button>
+        </div>
+        <p class="hint">Khẳng định và phủ định nằm ở hai phía đối lập của vòng xoáy. Sau hai lần phủ định, sự vật trở về cùng phía nhưng ở tầng cao hơn.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="vi-tri">
+    <div class="wrap">
+      <h2>Vị trí của quy luật</h2>
+      <p class="sec-intro">Là một trong ba quy luật của phép biện chứng duy vật. Mỗi quy luật trả lời một câu hỏi khác nhau về sự phát triển.</p>
+      <div class="laws">
+        <div class="law"><b>Lượng – chất</b>Phát triển diễn ra theo cách thức nào?</div>
+        <div class="law"><b>Mâu thuẫn</b>Nguồn gốc, động lực của phát triển là gì?</div>
+        <div class="law me"><b>Phủ định của phủ định</b>Phát triển đi theo khuynh hướng, hình thức nào và cho ra kết quả gì?</div>
+      </div>
+      <div class="panel">
+        <div class="seg" role="tablist" id="aspectTabs"></div>
+        <div class="aspect-out" id="aspectOut"></div>
+        <p class="muted" style="margin:14px 0 0;font-size:15px">Tất cả thông qua sự thống nhất giữa <b>tính thay đổi</b> và <b>tính kế thừa</b> trong sự phát triển.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="khai-niem">
+    <div class="wrap two">
+      <div>
+        <h2>Phủ định biện chứng là gì?</h2>
+        <p class="sec-intro">Không phải sự thay thế nào cũng là phủ định biện chứng. Bật công tắc để so sánh.</p>
+        <div class="toggle" role="group" aria-label="So sánh hai loại phủ định">
+          <button aria-pressed="false" data-neg="chung">Phủ định nói chung</button>
+          <button aria-pressed="true" data-neg="bc">Phủ định biện chứng</button>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="neg-vis" id="negVis"></div>
+        <div id="negText"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="dac-trung">
+    <div class="wrap">
+      <h2>Bốn đặc trưng</h2>
+      <p class="sec-intro">Đặc điểm cơ bản: sau ít nhất hai lần phủ định, sự vật phát triển có tính chu kỳ theo đường xoáy ốc, giai đoạn sau vẫn bảo tồn những gì tích cực của giai đoạn trước.</p>
+      <div class="panel">
+        <div class="seg" role="tablist" id="featTabs"></div>
+        <div class="feat-body" id="featOut"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="ke-thua">
+    <div class="wrap">
+      <h2>Kế thừa: giữ gì, sửa gì, bỏ gì?</h2>
+      <p class="sec-intro">Cái cũ ở đây là <b>cách học truyền thống</b>. Thử ba cách “phủ định” nó và xem cái mới nhận được gì.</p>
+      <div class="lab-modes">
+        <button class="btn paddy" data-lab="bc">Phủ định biện chứng</button>
+        <button class="btn ghost" data-lab="sach">Phủ định sạch trơn</button>
+        <button class="btn ghost" data-lab="sieu">Kế thừa siêu hình</button>
+        <button class="btn ghost" data-lab="reset">Đặt lại</button>
+      </div>
+      <div class="old-box"><h3>Cái cũ</h3><div class="pills" id="labOld"></div></div>
+      <div class="bins">
+        <div class="bin k"><h4>Chọn lọc, giữ lại</h4><div class="pills" id="binK"></div></div>
+        <div class="bin f"><h4>Cải tạo cho phù hợp</h4><div class="pills" id="binF"></div></div>
+        <div class="bin d"><h4>Loại bỏ</h4><div class="pills" id="binD"></div></div>
+      </div>
+      <div class="new-box"><h3>Cái mới</h3><div class="pills" id="labNew"></div></div>
+      <div id="labVerdict"></div>
+      <p class="formula">Cái mới = Kế thừa có chọn lọc + Cải tạo + Phát triển</p>
+    </div>
+  </section>
+
+  <section class="block" id="xoay-oc">
+    <div class="wrap two">
+      <div>
+        <h2>Vì sao là xoáy ốc, không phải vòng tròn?</h2>
+        <p>Những nội dung được kế thừa không thể đi theo đường thẳng, mà vận động theo một đường tròn không nằm trên một mặt phẳng: đường xoáy ốc. Nó thể hiện ba điều cùng lúc:</p>
+        <div class="traits"><span>Kế thừa</span><span>Lặp lại</span><span>Tiến lên</span></div>
+        <blockquote>“Sự phát triển hình như diễn lại những giai đoạn đã qua, nhưng dưới một hình thức khác, ở một trình độ cao hơn… theo đường trôn ốc chứ không theo đường thẳng.”<cite>V.I. Lênin</cite></blockquote>
+      </div>
+      <div class="panel">
+        <svg id="cmpSvg" viewBox="0 0 520 280" role="img" aria-label="So sánh vòng tròn và đường xoáy ốc"></svg>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:8px">
+          <button class="btn grain" id="cmpRun">Chạy một vòng</button>
+          <span class="muted" style="font-size:14px" id="cmpNote">Hai chấm cùng đi một vòng trọn vẹn.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="noi-dung">
+    <div class="wrap two">
+      <div>
+        <h2>Nội dung quy luật theo các bước</h2>
+        <ol class="steps">
+          <li>Bất kỳ sự vật nào cũng tự khẳng định mình, và là thể thống nhất của các mặt đối lập: khẳng định và phủ định.</li>
+          <li>Các mặt đối lập đấu tranh với nhau, làm xuất hiện sự vật mới phủ định biện chứng sự vật ban đầu (phủ định lần 1).</li>
+          <li>Đến lượt mình, sự vật mới lại tự phủ định, làm xuất hiện sự vật dường như lặp lại sự vật ban đầu, nhưng trên cơ sở cao hơn (phủ định của phủ định).</li>
+          <li>Sự vật cứ tiếp tục phát triển qua các vòng khâu khác, từ thấp lên cao, vô tận, theo đường xoáy ốc.</li>
+        </ol>
+      </div>
+      <div class="why">
+        <h3 style="font-size:1.5rem">Vì sao phải qua nhiều lần phủ định?</h3>
+        <div class="panel"><h3>Một lần phủ định chưa đủ</h3><p style="margin:0">Phủ định lần 1 chỉ biến sự vật thành cái đối lập với nó. Phải qua ít nhất hai lần mới ra đời sự vật mới, hoàn thành một chu kỳ. Số lần có thể nhiều hơn hai, tùy quá trình cụ thể.</p></div>
+        <div class="panel"><h3>Mỗi lần mang thêm cái tích cực</h3><p style="margin:0">Mỗi lần phủ định biện chứng giữ lại yếu tố tích cực và thêm yếu tố mới. Phủ định của phủ định khép một chu kỳ, đồng thời mở ra điểm xuất phát của chu kỳ tiếp theo.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="y-nghia">
+    <div class="wrap">
+      <h2>Ý nghĩa phương pháp luận</h2>
+      <p class="sec-intro">Bấm vào từng ý để mở.</p>
+      <div class="meaning">
+        <details><summary><span class="n">1</span>Chỉ ra khuynh hướng tiến lên</summary><p>Sự thống nhất giữa tính tiến bộ và tính kế thừa của phát triển; sau khi trải qua các mắt xích chuyển hóa, có thể xác định được kết quả cuối cùng của sự phát triển.</p></details>
+        <details><summary><span class="n">2</span>Phát triển là quanh co, phức tạp</summary><p>Không đều đặn thẳng tắp, có va vấp, có lúc thụt lùi tương đối. Hiểu điều này giúp ta lạc quan, giữ vững bản lĩnh, không bi quan hay chao đảo.</p></details>
+        <details><summary><span class="n">3</span>Nhận thức đúng về cái mới</summary><p>Cái mới phù hợp quy luật là giai đoạn cao về chất. Trong tự nhiên, cái mới xuất hiện tự phát; trong xã hội, cái mới gắn với nhận thức và hành động có ý thức của con người.</p></details>
+        <details><summary><span class="n">4</span>Ủng hộ cái mới, kế thừa có chọn lọc</summary><p>Cái mới tất thắng, nhưng có lúc cái cũ còn mạnh hơn. Cần tạo điều kiện cho cái mới phát triển, đồng thời kế thừa có chọn lọc yếu tố tích cực của cái cũ.</p></details>
+      </div>
+      <div class="lessons">
+        <div class="lesson">
+          <h3>Đường đi lên không thẳng, đừng nản</h3>
+          <svg viewBox="0 0 320 120" aria-hidden="true"><path d="M10 110 C60 105 50 80 90 78 S120 95 140 70 S190 72 200 50 S250 60 260 30 S300 20 310 12" fill="none" stroke="var(--paddy)" stroke-width="4" stroke-linecap="round" stroke-dasharray="2 9"/><circle cx="310" cy="12" r="6" fill="var(--grain)"/><text x="10" y="96" font-size="12" fill="var(--muted)">xuất phát</text><text x="250" y="48" font-size="12" fill="var(--muted)">mục tiêu</text></svg>
+          <p style="margin:10px 0 0">Như đi đường đèo: lúc quanh co, lúc xuống dốc, nhưng con đường vẫn dẫn lên đỉnh. Người học gõ 10 ngón cũng chậm hơn kiểu “mổ cò” lúc đầu, rồi về sau nhanh hơn hẳn.</p>
+        </div>
+        <div class="lesson">
+          <h3>Không bỏ hết, không giữ hết</h3>
+          <div class="dont">
+            <div class="x"><b>Sai: bỏ hết cái cũ.</b> Phủ định “sạch trơn”, coi thường quá khứ.</div>
+            <div class="x"><b>Sai: giữ khư khư cái cũ.</b> Bảo thủ, níu kéo cái đã lỗi thời.</div>
+            <div class="v"><b>Đúng: giữ lọc, thêm mới.</b> Giữ điều đúng, sửa điều chưa ổn, thêm điều mới tiến bộ.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="van-dung">
+    <div class="wrap">
+      <div class="apply">
+        <div>
+          <h2>Bài học vận dụng</h2>
+          <p>Trong học tập, hãy tiếp thu cái mới nhưng không phủ định hoàn toàn kiến thức và kinh nghiệm đã có. Dùng công nghệ, AI hay nền tảng học trực tuyến, đồng thời vẫn giữ tự học, ghi chép, đọc tài liệu và tư duy độc lập.</p>
+        </div>
+        <div><a class="btn grain" href="#on-tap" style="text-decoration:none;display:inline-block">Vào ôn tập</a></div>
+      </div>
+    </div>
+  </section>
+  <footer><div class="wrap">Nội dung tổng hợp từ tài liệu môn Triết học Mác – Lênin: “Quy luật phủ định của phủ định”, bài giảng Tiết 21 và bài thuyết trình của Nhóm 5.</div></footer>
+</main>
+
+<!-- ================= GAME ================= -->
+<main id="game" class="page">
+  <div class="wrap">
+    <div id="lobby">
+      <div class="g-head">
+        <h1>Ôn tập bằng trò chơi</h1>
+        <p class="lead muted">Chọn một chế độ. Điểm cao nhất được lưu trên trình duyệt của bạn.</p>
+      </div>
+      <div class="modes">
+        <div class="mode">
+          <svg viewBox="0 0 80 80" aria-hidden="true"><ellipse cx="40" cy="64" rx="30" ry="8" fill="none" stroke="var(--guide)" stroke-width="3"/><path d="M10 64 C10 74 70 74 70 64 C70 54 10 54 10 44 C10 34 70 34 70 24 C70 14 30 12 26 16" fill="none" stroke="var(--paddy)" stroke-width="4" stroke-linecap="round"/><circle cx="26" cy="16" r="6" fill="var(--grain)"/></svg>
+          <h2>Leo đường xoáy ốc</h2>
+          <p class="muted" style="margin:0">3 vòng, 18 câu, 4 dạng: trắc nghiệm, đúng/sai, phân loại, sắp xếp. Trả lời đúng để leo lên; sai thì bị “thụt lùi tương đối”. Trả lời nhanh và liên tiếp để nhận thêm điểm.</p>
+          <p class="best" id="bestClimb"></p>
+          <button class="btn grain" id="startClimb">Bắt đầu leo</button>
+        </div>
+        <div class="mode">
+          <svg viewBox="0 0 80 80" aria-hidden="true"><rect x="6" y="14" width="26" height="18" rx="5" fill="var(--paddy-soft)" stroke="var(--paddy)" stroke-width="2.5"/><rect x="48" y="14" width="26" height="18" rx="5" fill="var(--surface)" stroke="var(--line)" stroke-width="2.5"/><rect x="6" y="48" width="26" height="18" rx="5" fill="var(--surface)" stroke="var(--line)" stroke-width="2.5"/><rect x="48" y="48" width="26" height="18" rx="5" fill="var(--paddy-soft)" stroke="var(--paddy)" stroke-width="2.5"/><path d="M32 23 C42 23 38 57 48 57" fill="none" stroke="var(--grain)" stroke-width="3"/></svg>
+          <h2>Nối khái niệm</h2>
+          <p class="muted" style="margin:0">8 khái niệm, 8 định nghĩa. Chạm một khái niệm rồi chạm định nghĩa khớp với nó. Càng nhanh, càng ít lần sai, điểm càng cao.</p>
+          <p class="best" id="bestMatch"></p>
+          <button class="btn paddy" id="startMatch">Bắt đầu nối</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="arena" id="climbArena">
+      <div class="hud">
+        <span class="stat">Vòng <b id="hRound">1</b>/3</span>
+        <span class="stat">Câu <b id="hQ">1</b>/18</span>
+        <span class="stat">Điểm <b id="hScore">0</b></span>
+        <span class="stat">Chuỗi <b id="hStreak">0</b></span>
+        <button class="btn ghost quit" data-quit>Thoát</button>
+      </div>
+      <div class="timer"><i id="timerBar"></i></div>
+      <div class="climb-grid">
+        <div id="climbMain"></div>
+        <div class="climb-side"><svg id="climbSvg" viewBox="0 0 300 500" role="img" aria-label="Vị trí của bạn trên đường xoáy ốc"></svg><p id="climbNote">Bậc 0/18</p></div>
+      </div>
+    </div>
+
+    <div class="arena" id="matchArena">
+      <div class="hud">
+        <span class="stat">Thời gian <b id="mTime">0</b>s</span>
+        <span class="stat">Đã nối <b id="mDone">0</b>/8</span>
+        <span class="stat">Lần sai <b id="mMiss">0</b></span>
+        <button class="btn ghost quit" data-quit>Thoát</button>
+      </div>
+      <div id="matchMain"></div>
+    </div>
+  </div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s), $$=s=>Array.from(document.querySelectorAll(s));
+const reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,String(v))}catch(e){return null}}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let toastT;function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+
+/* ---------- routing ---------- */
+function route(){
+  const p=location.hash==='#on-tap'?'game':'theory';
+  const changed=document.body.dataset.page!==p;
+  document.body.dataset.page=p;
+  $$('[data-nav]').forEach(a=>{if(a.dataset.nav===p)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  if(changed){window.scrollTo(0,0); if(p==='game') showLobby();}
+}
+window.addEventListener('hashchange',route);
+
+/* ---------- helix geometry ---------- */
+function hp(t,o){const a=2*Math.PI*t;return{x:o.cx-o.R*Math.cos(a),y:o.base-o.rise*t+o.r*Math.sin(a)}}
+function hsegs(t0,t1,o){
+  const out=[];if(t1<=t0+1e-4)return out;
+  const n=Math.max(2,Math.ceil((t1-t0)/0.004));let cur=null;
+  for(let i=0;i<=n;i++){
+    const t=t0+(t1-t0)*i/n,p=hp(t,o),f=Math.sin(2*Math.PI*t)>=0;
+    if(!cur||cur.f!==f){const prev=cur?cur.pts[cur.pts.length-1]:null;cur={f,pts:prev?[prev]:[]};out.push(cur)}
+    cur.pts.push(p);
+  }
+  return out.map(s=>({f:s.f,d:'M'+s.pts.map(p=>p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' L')}));
+}
+function animate(from,to,ms,step,done){
+  if(reduce||ms<=0){step(to);done&&done();return}
+  const t0=performance.now();
+  function f(now){const k=Math.min(1,(now-t0)/ms),e=k<.5?2*k*k:1-Math.pow(-2*k+2,2)/2;step(from+(to-from)*e);if(k<1)requestAnimationFrame(f);else done&&done()}
+  requestAnimationFrame(f);
+}
+
+/* ---------- HERO ---------- */
+const EX={
+ thoc:{name:'Hạt thóc',short:['Hạt thóc','Cây lúa','Nhiều hạt thóc','Cánh đồng','Bội thu'],stages:[
+  ['Khẳng định','Hạt thóc','Điểm xuất phát: một hạt thóc chưa bị phủ định lần nào. Bên trong nó đã chứa khả năng nảy mầm, tức mâu thuẫn dẫn tới sự tự phủ định.'],
+  ['Phủ định lần 1','Cây lúa','Gieo xuống đất, hạt nảy mầm thành cây lúa. Hạt thóc mất đi, cái đối lập với nó ra đời, nhưng sức sống của hạt được giữ lại trong cây.'],
+  ['Phủ định của phủ định','Nhiều hạt thóc mới','Cây lúa trổ bông, cho ra nhiều hạt thóc. Về hình thức lại là hạt thóc như ban đầu; về nội dung thì nhiều hơn, tốt hơn. Một chu kỳ hoàn thành.'],
+  ['Chu kỳ mới, phủ định lần 1','Cánh đồng lúa','Hạt thóc mới trở thành điểm xuất phát của chu kỳ tiếp theo, được gieo thành cả cánh đồng.'],
+  ['Chu kỳ mới, phủ định của phủ định','Mùa vụ bội thu','Lại trở về hạt thóc, ở trình độ cao hơn nữa. Các vòng xoáy nối nhau cho thấy sự phát triển là vô tận.']]},
+ tien:{name:"Tiền tệ T – H – T'",short:['T 100tr','H',"T' 120tr",'H mới',"T''"],stages:[
+  ['Khẳng định','T: 100 triệu','Người sản xuất có 100 triệu đồng tiền (T). Đây là điểm xuất phát.'],
+  ['Phủ định lần 1','H: TLSX + SLĐ','Tiền chuyển thành cái đối lập với nó: hàng hóa, gồm tư liệu sản xuất (máy móc, nguyên liệu) và sức lao động, để tổ chức sản xuất.'],
+  ['Phủ định của phủ định',"T': 120 triệu","Hàng hóa mới làm ra được bán, thu về 120 triệu. Lại là tiền như ban đầu, nhưng nhiều hơn: T' lớn hơn T."],
+  ['Chu kỳ mới, phủ định lần 1','H: sản xuất mở rộng','Số tiền 120 triệu lại được đầu tư vào sản xuất với quy mô lớn hơn.'],
+  ['Chu kỳ mới, phủ định của phủ định',"T'': nhiều hơn nữa",'Tiền tiếp tục quay về dưới hình thức tiền, ở mức cao hơn. Tiền, rồi hàng hóa, rồi tiền nhiều hơn: mỗi chu kỳ là một vòng xoáy.']]},
+ hoc:{name:'Cách học',short:['Cách cũ','Công nghệ','Kết hợp','Công cụ mới','Hoàn thiện hơn'],stages:[
+  ['Khẳng định','Cách học truyền thống','Tự học, ghi chép tay, đọc giáo trình. Có điểm mạnh, nhưng cũng có hạn chế: chậm, ít nguồn, dễ học thuộc máy móc.'],
+  ['Phủ định lần 1','Học bằng công nghệ','Chuyển sang cái đối lập: AI, video, nền tảng trực tuyến. Nhanh và nhiều nguồn, nhưng nếu bỏ hết thói quen cũ thì dễ ỷ lại, học hời hợt.'],
+  ['Phủ định của phủ định','Kết hợp có chọn lọc','Quay lại coi trọng tự học, ghi chép, tư duy độc lập, nhưng nay có công nghệ hỗ trợ. Dường như lặp lại cái ban đầu, ở trình độ cao hơn.'],
+  ['Chu kỳ mới, phủ định lần 1','Công cụ mới hơn','Cách học kết hợp lại bộc lộ hạn chế mới; công cụ mới xuất hiện và thay thế.'],
+  ['Chu kỳ mới, phủ định của phủ định','Cách học hoàn thiện hơn','Mỗi vòng giữ lại cái tích cực của vòng trước. Việc học cũng phát triển theo đường xoáy ốc.']]}
+};
+const HO={cx:260,R:165,r:40,base:392,rise:150};
+let hEx='thoc',hIdx=0,hT=0,hBusy=false;
+function drawHero(){
+  const ex=EX[hEx];let s='';
+  s+='<defs><marker id="ar" viewBox="0 0 10 10" refX="5" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>';
+  s+='<line x1="26" y1="410" x2="26" y2="70" stroke="var(--muted)" stroke-width="1.5" marker-end="url(#ar)"/>';
+  s+='<text transform="translate(16 330) rotate(-90)" font-size="12" fill="var(--muted)">Trình độ phát triển</text>';
+  hsegs(0,2.02,HO).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--guide)" stroke-width="${g.f?2:1.5}" stroke-dasharray="${g.f?'0':'4 6'}" stroke-linecap="round"/>`);
+  const segs=hsegs(0,hT,HO);
+  segs.filter(g=>!g.f).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--paddy)" stroke-width="4" opacity=".45" stroke-linecap="round"/>`);
+  segs.filter(g=>g.f).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--paddy)" stroke-width="6" stroke-linecap="round"/>`);
+  // level lines
+  [0,1,2].forEach(k=>{const p=hp(k,HO);s+=`<line x1="${p.x}" y1="${p.y}" x2="${p.x+330}" y2="${p.y}" stroke="var(--guide)" stroke-dasharray="2 5"/>`});
+  for(let i=0;i<5;i++){
+    const t=i*.5,p=hp(t,HO),reached=hT>=t-1e-3,cur=i===hIdx;
+    s+=`<g style="cursor:pointer" data-st="${i}"><circle cx="${p.x}" cy="${p.y}" r="${cur?13:10}" fill="${reached?(i%2===0?'var(--grain-bright)':'var(--paddy)'):'var(--surface)'}" stroke="${reached?'var(--ink)':'var(--guide)'}" stroke-width="2"/>`;
+    s+=`<text x="${p.x}" y="${p.y-20}" text-anchor="middle" font-size="14" font-weight="${cur?700:500}" fill="${reached?'var(--ink)':'var(--muted)'}">${esc(ex.short[i])}</text></g>`;
+  }
+  const h=hp(hT,HO);s+=`<circle cx="${h.x}" cy="${h.y}" r="5" fill="var(--ink)"/>`;
+  $('#heroSvg').innerHTML=s;
+  $$('#heroSvg [data-st]').forEach(g=>g.addEventListener('click',()=>go(+g.dataset.st)));
+}
+function heroText(){
+  const st=EX[hEx].stages[hIdx];$('#stTag').textContent=st[0];$('#stTitle').textContent=st[1];$('#stDesc').textContent=st[2];
+  $('#prevBtn').disabled=hIdx===0;$('#nextBtn').disabled=hIdx===4;
+  $('#nextBtn').textContent=hIdx===1||hIdx===3?'Phủ định lần nữa':'Phủ định tiếp';
+  $$('#dots .dot').forEach((d,i)=>d.classList.toggle('on',i<=hIdx));
+}
+function go(i){
+  if(i<0||i>4||hBusy)return;hIdx=i;heroText();hBusy=true;
+  animate(hT,i*.5,Math.abs(i*.5-hT)*1400,v=>{hT=v;drawHero()},()=>{hBusy=false});
+}
+$('#exChips').innerHTML=Object.keys(EX).map(k=>`<button class="chip" data-ex="${k}" aria-pressed="${k===hEx}">${EX[k].name}</button>`).join('');
+$$('#exChips .chip').forEach(b=>b.addEventListener('click',()=>{if(hBusy)return;hEx=b.dataset.ex;$$('#exChips .chip').forEach(c=>c.setAttribute('aria-pressed',c===b));hIdx=0;hT=0;heroText();drawHero()}));
+$('#dots').innerHTML=[0,1,2,3,4].map(i=>`<button class="dot" aria-label="Giai đoạn ${i+1}" data-d="${i}">${i+1}</button>`).join('');
+$$('#dots .dot').forEach(d=>d.addEventListener('click',()=>go(+d.dataset.d)));
+$('#prevBtn').addEventListener('click',()=>go(hIdx-1));
+$('#nextBtn').addEventListener('click',()=>go(hIdx+1));
+heroText();drawHero();
+
+/* ---------- aspects ---------- */
+const ASP=[
+ ['Khuynh hướng','Đi lên','Từ thấp đến cao, từ đơn giản đến phức tạp, từ kém hoàn thiện đến hoàn thiện hơn.','<svg viewBox="0 0 120 90"><path d="M10 80 L45 55 L60 62 L110 12" fill="none" stroke="var(--paddy)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="M96 12h14v14" fill="none" stroke="var(--paddy)" stroke-width="5" stroke-linecap="round"/></svg>'],
+ ['Hình thức','Xoáy ốc','Không theo đường thẳng, không khép kín như vòng tròn, mà cuộn lên: lặp lại nhưng không quay lại.','<svg viewBox="0 0 120 90"><path d="M20 78 C20 88 100 88 100 78 C100 68 20 68 20 56 C20 44 100 44 100 34 C100 24 20 24 22 12" fill="none" stroke="var(--paddy)" stroke-width="5" stroke-linecap="round"/></svg>'],
+ ['Kết quả','Cái mới ra đời từ cái cũ','Sự vật, hiện tượng mới ra đời từ chính sự vật, hiện tượng cũ, mang theo những yếu tố tích cực đã được chọn lọc.','<svg viewBox="0 0 120 90"><circle cx="30" cy="55" r="16" fill="var(--guide)"/><path d="M50 55h22" stroke="var(--muted)" stroke-width="3"/><path d="M68 49l8 6-8 6" fill="none" stroke="var(--muted)" stroke-width="3"/><circle cx="96" cy="50" r="22" fill="var(--grain-bright)"/><circle cx="96" cy="50" r="9" fill="var(--guide)"/></svg>']];
+function aspect(i){
+  $$('#aspectTabs button').forEach((b,j)=>b.setAttribute('aria-selected',i===j));
+  const a=ASP[i];$('#aspectOut').innerHTML=`${a[3]}<div><h3 style="font-size:1.5rem">${a[1]}</h3><p style="margin:4px 0 0">${a[2]}</p></div>`;
+}
+$('#aspectTabs').innerHTML=ASP.map((a,i)=>`<button role="tab" data-a="${i}">${a[0]}</button>`).join('');
+$$('#aspectTabs button').forEach(b=>b.addEventListener('click',()=>aspect(+b.dataset.a)));aspect(0);
+
+/* ---------- negation toggle ---------- */
+const NEG={
+ chung:{vis:'<svg viewBox="0 0 400 110"><rect x="30" y="30" width="90" height="50" rx="10" fill="var(--surface)" stroke="var(--muted)" stroke-width="2"/><text x="75" y="61" text-anchor="middle" font-size="20" font-weight="700" fill="var(--ink)">A</text><path d="M135 55h120" stroke="var(--muted)" stroke-width="3"/><path d="M247 47l10 8-10 8" fill="none" stroke="var(--muted)" stroke-width="3"/><text x="195" y="44" text-anchor="middle" font-size="13" fill="var(--muted)">thay thế</text><rect x="275" y="30" width="90" height="50" rx="10" fill="var(--surface)" stroke="var(--muted)" stroke-width="2"/><text x="320" y="61" text-anchor="middle" font-size="20" font-weight="700" fill="var(--ink)">B</text><text x="195" y="100" text-anchor="middle" font-size="12" fill="var(--red)">không giữ lại gì, chưa chắc phát triển</text></svg>',
+  txt:'<h3>Phủ định nói chung</h3><p>Là sự thay thế một sự vật, hiện tượng này bởi một sự vật, hiện tượng khác: A ⇒ B. Sự thay thế ấy có thể do tác động từ bên ngoài và không nhất thiết đưa tới phát triển. Ví dụ, hạt thóc bị nghiền nát thì không còn khả năng nảy mầm.</p>'},
+ bc:{vis:'<svg viewBox="0 0 400 110"><g fill="none" stroke-width="7"><ellipse cx="85" cy="55" rx="50" ry="26" stroke="var(--guide)"/><ellipse cx="170" cy="55" rx="54" ry="29" stroke="var(--paddy)"/><ellipse cx="260" cy="55" rx="58" ry="32" stroke="var(--grain-bright)"/><ellipse cx="345" cy="55" rx="40" ry="24" stroke="var(--guide)" stroke-dasharray="6 7"/></g><text x="85" y="102" text-anchor="middle" font-size="12" fill="var(--muted)">cũ</text><text x="170" y="104" text-anchor="middle" font-size="12" fill="var(--muted)">mới</text><text x="260" y="106" text-anchor="middle" font-size="12" fill="var(--muted)">mới hơn</text></svg>',
+  txt:'<h3>Phủ định biện chứng</h3><p>Là <b>tự phủ định, tự phát triển</b> của sự vật, hiện tượng. Nó làm cái mới ra đời thay thế cái cũ, đồng thời là yếu tố liên hệ giữa cũ và mới: một “mắt xích” trong “sợi dây chuyền” dẫn tới sự vật mới tiến bộ hơn.</p><p style="margin:0">Vì vậy, phủ định biện chứng là vòng khâu tất yếu của sự liên hệ và sự phát triển.</p>'}};
+function neg(k){$$('[data-neg]').forEach(b=>b.setAttribute('aria-pressed',b.dataset.neg===k));$('#negVis').innerHTML=NEG[k].vis;$('#negText').innerHTML=NEG[k].txt}
+$$('[data-neg]').forEach(b=>b.addEventListener('click',()=>neg(b.dataset.neg)));neg('bc');
+
+/* ---------- features ---------- */
+const FEAT=[
+ ['Tính khách quan','Sự vật tự phủ định mình do mâu thuẫn bên trong nó gây ra. Nguồn gốc nằm ở cuộc đấu tranh giữa các mặt đối lập bên trong, không phụ thuộc ý muốn chủ quan của con người.','Hạt thóc nảy mầm nhờ chính sức sống bên trong nó, khi gặp điều kiện thuận lợi.'],
+ ['Tính phổ biến','Diễn ra trong mọi lĩnh vực: tự nhiên, xã hội và tư duy.','Thay đổi cách học: từ học thuộc máy móc sang hiểu bản chất vấn đề.'],
+ ['Tính đa dạng, phong phú','Thể hiện ở nội dung và hình thức của phủ định. Cách thức phủ định khác nhau theo từng lĩnh vực.','Tự nhiên: trứng phát triển thành gà con qua quá trình phát triển của phôi. Tư duy: nhận thức chưa đúng được sửa qua học tập, kiểm chứng, rút kinh nghiệm.'],
+ ['Tính kế thừa','Không phủ định sạch trơn: loại bỏ yếu tố không còn phù hợp, cải tạo yếu tố còn phù hợp để đưa vào cái mới. Nhờ vậy cái mới có chất giàu có hơn, tiến bộ hơn.','Thử mô phỏng ở phần ngay bên dưới.']];
+function feat(i){$$('#featTabs button').forEach((b,j)=>b.setAttribute('aria-selected',i===j));const f=FEAT[i];$('#featOut').innerHTML=`<div><h3 style="font-size:1.4rem;margin-bottom:8px">${f[0]}</h3><p style="margin:0">${f[1]}</p></div><div class="ex"><b>Ví dụ</b>${f[2]}</div>`}
+$('#featTabs').innerHTML=FEAT.map((f,i)=>`<button role="tab" data-f="${i}">${f[0]}</button>`).join('');
+$$('#featTabs button').forEach(b=>b.addEventListener('click',()=>feat(+b.dataset.f)));feat(0);
+
+/* ---------- inheritance lab ---------- */
+const OLD=[{t:'Tự học',f:'k'},{t:'Đọc tài liệu',f:'k'},{t:'Tư duy độc lập',f:'k'},{t:'Ghi chép tay',f:'f',to:'Ghi chép kèm sơ đồ tư duy'},{t:'Học thuộc lòng máy móc',f:'d'},{t:'Chỉ dựa vào một quyển giáo trình',f:'d'}];
+const ADD=['Dùng AI để hỏi đáp','Học trên nền tảng trực tuyến'];
+const pill=(t,c,d)=>`<span class="pill ${c}" style="animation-delay:${d||0}ms">${esc(t)}</span>`;
+function lab(mode){
+  $$('[data-lab]').forEach(b=>{if(b.dataset.lab!=='reset')b.className='btn '+(b.dataset.lab===mode?'paddy':'ghost')});
+  ['#binK','#binF','#binD','#labNew','#labVerdict'].forEach(s=>$(s).innerHTML='');
+  if(mode==='reset'||!mode){$('#labOld').innerHTML=OLD.map(o=>pill(o.t,'')).join('');$$('[data-lab]').forEach(b=>b.className='btn ghost');return}
+  $('#labOld').innerHTML=OLD.map(o=>pill(o.t,'',0)).join('');
+  let K=[],F=[],D=[],N=[],v,good=false;
+  if(mode==='bc'){OLD.forEach(o=>{if(o.f==='k'){K.push(o.t);N.push([o.t,'keep'])}else if(o.f==='f'){F.push(o.to);N.push([o.to,'fix'])}else D.push(o.t)});ADD.forEach(a=>N.push([a,'add']));good=true;
+    v='Cái mới giữ được nền tảng tốt của cái cũ, đã cải tạo cái còn dùng được, bỏ cái cản trở và bổ sung yếu tố mới. Đây là kế thừa biện chứng.'}
+  else if(mode==='sach'){OLD.forEach(o=>D.push(o.t));ADD.forEach(a=>N.push([a,'add']));
+    v='Phủ định sạch trơn: vứt bỏ cả tự học, tư duy độc lập. Cái mới chỉ còn công cụ, mất hết nền tảng, dễ ỷ lại và học hời hợt.'}
+  else{OLD.forEach(o=>{K.push(o.t);N.push([o.t,'keep'])});
+    v='Kế thừa siêu hình: giữ nguyên si mọi thứ, kể cả học thuộc máy móc. Không có gì mới, sự phát triển bị chính cái cũ ngáng đường.'}
+  let d=0;const st=()=>(d+=70);
+  $('#binK').innerHTML=K.map(t=>pill(t,'keep',st())).join('');
+  $('#binF').innerHTML=F.map(t=>pill(t,'fix',st())).join('');
+  $('#binD').innerHTML=D.map(t=>pill(t,'drop',st())).join('');
+  $('#labNew').innerHTML=N.map(n=>pill(n[0],n[1],st()+150)).join('')||'<span class="muted" style="font-size:14px">Trống</span>';
+  $('#labVerdict').innerHTML=`<div class="verdict ${good?'good':'bad'}">${v}</div>`;
+}
+$$('[data-lab]').forEach(b=>b.addEventListener('click',()=>lab(b.dataset.lab)));lab('reset');
+
+/* ---------- circle vs spiral ---------- */
+const CO={cx:390,R:85,r:28,base:220,rise:130};
+function drawCmp(p,done){
+  let s='';
+  s+='<text x="130" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">Vòng tròn</text><text x="390" y="30" text-anchor="middle" font-size="15" font-weight="700" fill="var(--ink)">Đường xoáy ốc</text>';
+  s+='<ellipse cx="130" cy="180" rx="85" ry="28" fill="none" stroke="var(--guide)" stroke-width="2.5"/>';
+  hsegs(0,1.25,CO).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--guide)" stroke-width="2.5" stroke-dasharray="${g.f?'0':'4 6'}"/>`);
+  hsegs(0,p,CO).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--paddy)" stroke-width="${g.f?5:3}" opacity="${g.f?1:.5}" stroke-linecap="round"/>`);
+  const a=2*Math.PI*p,cx=130-85*Math.cos(a),cy=180+28*Math.sin(a);
+  if(p>0)s+=`<path d="M45 180 ${Array.from({length:Math.ceil(p*80)+1},(_,i)=>{const b=2*Math.PI*Math.min(p,i/80);return 'L'+(130-85*Math.cos(b)).toFixed(1)+' '+(180+28*Math.sin(b)).toFixed(1)}).join(' ')}" fill="none" stroke="var(--red)" stroke-width="4" stroke-linecap="round"/>`;
+  s+='<circle cx="45" cy="180" r="7" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>';
+  const st=hp(0,CO);s+=`<circle cx="${st.x}" cy="${st.y}" r="7" fill="var(--surface)" stroke="var(--ink)" stroke-width="2"/>`;
+  s+=`<circle cx="${cx}" cy="${cy}" r="9" fill="var(--red)"/>`;
+  const q=hp(p,CO);s+=`<circle cx="${q.x}" cy="${q.y}" r="9" fill="var(--grain-bright)" stroke="var(--ink)" stroke-width="1.5"/>`;
+  if(done){
+    s+='<text x="130" y="250" text-anchor="middle" font-size="13" font-weight="600" fill="var(--red)">Về đúng chỗ cũ: không phát triển</text>';
+    s+=`<line x1="${st.x-14}" y1="${st.y}" x2="${st.x-14}" y2="${q.y}" stroke="var(--grain)" stroke-width="2"/><text x="390" y="250" text-anchor="middle" font-size="13" font-weight="600" fill="var(--paddy)">Cùng phía, nhưng cao hơn</text>`;
+  }
+  $('#cmpSvg').innerHTML=s;
+}
+drawCmp(0);
+$('#cmpRun').addEventListener('click',()=>{$('#cmpRun').disabled=true;animate(0,1,2600,p=>drawCmp(p),()=>{drawCmp(1,true);$('#cmpNote').textContent='Lặp lại nhưng không quay lại: đó là phát triển.';$('#cmpRun').disabled=false;$('#cmpRun').textContent='Chạy lại'})});
+
+/* =============== GAME =============== */
+const R=[
+ {name:'Khẳng định',sub:'Khái niệm và vị trí của quy luật',pool:[
+  {ty:'mc',q:'Quy luật phủ định của phủ định chỉ ra điều gì của sự phát triển?',o:['Khuynh hướng, hình thức và kết quả của sự phát triển','Nguồn gốc, động lực của sự phát triển','Cách thức của sự phát triển','Điều kiện ngẫu nhiên của sự phát triển'],a:0,e:'Mâu thuẫn chỉ ra nguồn gốc, động lực; lượng – chất chỉ ra cách thức; phủ định của phủ định chỉ ra khuynh hướng (đi lên), hình thức (xoáy ốc), kết quả (cái mới ra đời từ cái cũ).'},
+  {ty:'mc',q:'Phủ định biện chứng là gì?',o:['Sự tự phủ định, tự phát triển của sự vật, hiện tượng','Sự xóa bỏ hoàn toàn sự vật cũ','Sự thay thế do tác động ngẫu nhiên từ bên ngoài','Sự quay trở lại y nguyên trạng thái ban đầu'],a:0,e:'Phủ định biện chứng là tự phủ định, tự phát triển, tạo tiền đề cho sự phát triển.'},
+  {ty:'mc',q:'Trong “sợi dây chuyền” phát triển, phủ định biện chứng đóng vai trò gì?',o:['Mắt xích dẫn tới sự ra đời của cái mới tiến bộ hơn','Điểm kết thúc của mọi sự phát triển','Vật cản của sự phát triển','Yếu tố cắt đứt cái cũ với cái mới'],a:0,e:'Nó là “mắt xích” và là yếu tố liên hệ giữa sự vật cũ với sự vật mới.'},
+  {ty:'mc',q:'“Phủ định nói chung” được hiểu là:',o:['Sự thay thế sự vật, hiện tượng này bằng sự vật, hiện tượng khác','Chỉ những thay đổi tiến bộ','Chỉ những thay đổi trong tư duy','Sự giữ nguyên sự vật'],a:0,e:'Phủ định nói chung: A ⇒ B, sự thay thế, không nhất thiết dẫn tới phát triển.'},
+  {ty:'tf',q:'Quy luật phủ định của phủ định là một trong ba quy luật của phép biện chứng duy vật.',a:true,e:'Đúng. Ba quy luật: lượng – chất, mâu thuẫn, phủ định của phủ định.'},
+  {ty:'tf',q:'Phát triển theo quy luật này là sự thống nhất giữa tính thay đổi và tính kế thừa.',a:true,e:'Đúng. Đó chính là cách quy luật giải thích khuynh hướng và hình thức phát triển.'},
+  {ty:'tf',q:'Phủ định biện chứng thay cái cũ bằng cái mới và cắt đứt hoàn toàn liên hệ giữa chúng.',a:false,e:'Sai. Phủ định biện chứng chính là yếu tố liên hệ giữa cái cũ và cái mới.'},
+  {ty:'or',q:'Sắp xếp các giai đoạn trong ví dụ hạt thóc:',o:['Hạt thóc (khẳng định)','Cây lúa (phủ định lần 1)','Nhiều hạt thóc mới (phủ định của phủ định)','Hạt thóc mới thành điểm xuất phát chu kỳ sau'],e:'Hạt thóc, rồi cây lúa, rồi nhiều hạt thóc mới; và hạt mới lại mở đầu chu kỳ tiếp theo.',must:true}]},
+ {name:'Phủ định',sub:'Đặc trưng và tính kế thừa',pool:[
+  {ty:'mc',q:'Nguồn gốc của phủ định biện chứng nằm ở đâu?',o:['Mâu thuẫn bên trong sự vật','Ý muốn chủ quan của con người','Tác động thuần túy từ bên ngoài','Sự sắp đặt có sẵn từ trước'],a:0,e:'Đây là tính khách quan: sự vật tự phủ định do mâu thuẫn bên trong.'},
+  {ty:'mc',q:'Tính phổ biến của phủ định biện chứng thể hiện ở chỗ:',o:['Diễn ra trong tự nhiên, xã hội và tư duy','Chỉ diễn ra trong xã hội','Chỉ diễn ra trong tự nhiên','Chỉ diễn ra trong tư duy'],a:0,e:'Phủ định biện chứng diễn ra trong mọi lĩnh vực.'},
+  {ty:'mc',q:'Tính đa dạng, phong phú của phủ định biện chứng thể hiện ở:',o:['Nội dung và hình thức của phủ định','Số lượng sự vật trên thế giới','Tốc độ phát triển luôn như nhau','Sự giống hệt nhau giữa các lĩnh vực'],a:0,e:'Cách thức phủ định khác nhau theo từng lĩnh vực, thể hiện ở nội dung và hình thức.'},
+  {ty:'mc',q:'Kế thừa siêu hình là:',o:['Giữ lại nguyên si cái cũ, kể cả yếu tố lạc hậu','Giữ lại có chọn lọc và cải tạo','Loại bỏ yếu tố cản trở','Bổ sung yếu tố mới'],a:0,e:'Kế thừa siêu hình không tự rũ bỏ cái lỗi thời, khiến chính nó cản trở sự phát triển.'},
+  {ty:'mc',q:'“Nhận thức chưa đúng được sửa đổi qua học tập, kiểm chứng” là phủ định trong lĩnh vực nào?',o:['Tư duy','Tự nhiên','Xã hội','Không thuộc lĩnh vực nào'],a:0,e:'Đây là ví dụ phủ định trong tư duy.'},
+  {ty:'tf',q:'Phủ định biện chứng là phủ định sạch trơn cái cũ.',a:false,e:'Sai. Do có kế thừa, phủ định biện chứng không phải phủ định sạch trơn.'},
+  {ty:'tf',q:'Yếu tố được giữ lại từ cái cũ vẫn phải được cải tạo cho phù hợp với cái mới.',a:true,e:'Đúng. Các yếu tố chọn giữ lại được cải tạo, biến đổi cho phù hợp.'},
+  {ty:'tf',q:'Trứng phát triển thành gà con là ví dụ phủ định biện chứng trong tự nhiên.',a:true,e:'Đúng. Phủ định diễn ra thông qua quá trình phát triển của phôi.'},
+  {ty:'so',q:'Cách học mới kế thừa biện chứng cách học cũ. Phân loại từng yếu tố:',b:['Kế thừa','Loại bỏ'],it:[['Tự học',0],['Ghi chép',0],['Đọc tài liệu',0],['Tư duy độc lập',0],['Học thuộc lòng máy móc',1]],e:'Giữ tự học, ghi chép, đọc tài liệu, tư duy độc lập; loại bỏ cách học thuộc máy móc.',must:true},
+  {ty:'so',q:'Đâu là kế thừa biện chứng, đâu không phải?',b:['Biện chứng','Không biện chứng'],it:[['Giữ lại yếu tố tích cực có chọn lọc',0],['Cải tạo yếu tố còn phù hợp',0],['Loại bỏ yếu tố cản trở phát triển',0],['Giữ nguyên si mọi thứ cũ',1],['Vứt bỏ toàn bộ quá khứ',1]],e:'Giữ nguyên si là kế thừa siêu hình; vứt bỏ tất cả là phủ định sạch trơn. Cả hai đều không biện chứng.'}]},
+ {name:'Phủ định của phủ định',sub:'Đường xoáy ốc, nội dung và ý nghĩa',pool:[
+  {ty:'mc',q:'Sự phát triển theo quy luật này có hình thức nào?',o:['Đường xoáy ốc','Đường thẳng','Vòng tròn khép kín','Đường ngẫu nhiên'],a:0,e:'Xoáy ốc: kế thừa, lặp lại, tiến lên.'},
+  {ty:'mc',q:'Cần ít nhất bao nhiêu lần phủ định để hoàn thành một chu kỳ phát triển?',o:['Hai','Một','Ba','Không cần'],a:0,e:'Ít nhất hai lần; có thể nhiều hơn tùy quá trình cụ thể.'},
+  {ty:'mc',q:'Ai nói: sự phát triển “hình như diễn lại những giai đoạn đã qua… ở một trình độ cao hơn”?',o:['V.I. Lênin','G.W.F. Hegel','C. Mác','Ph. Ăngghen'],a:0,e:'Đây là nhận định của V.I. Lênin về phủ định của phủ định.'},
+  {ty:'mc',q:'Vì sao sự phát triển không phải là vòng tròn?',o:['Vòng tròn quay lại đúng trạng thái ban đầu, không có phát triển thực sự','Vòng tròn quá phức tạp','Vì phát triển luôn đi thẳng','Vì sự vật không bao giờ lặp lại điều gì'],a:0,e:'Xoáy ốc lặp lại nhưng không quay lại y nguyên; mỗi vòng ở trình độ cao hơn.'},
+  {ty:'mc',q:"Trong T – H – T', T' khác T ở điểm nào?",o:['Trở lại hình thức tiền nhưng nhiều hơn (120 so với 100 triệu)','Giống y hệt T','T\' là hàng hóa','T\' ít hơn T'],a:0,e:'Về hình thức trở lại tiền, về nội dung ở mức cao hơn.'},
+  {ty:'mc',q:'Thái độ đúng rút ra từ quy luật là:',o:['Chống phủ định sạch trơn và chống bảo thủ, ủng hộ cái mới','Giữ chặt mọi cái cũ','Chối bỏ hoàn toàn quá khứ','Chờ cái mới tự đến'],a:0,e:'Kế thừa có chọn lọc, ủng hộ cái mới tiến bộ.'},
+  {ty:'mc',q:'Trong xã hội, sự xuất hiện cái mới gắn với:',o:['Nhận thức và hành động có ý thức của con người','Quá trình hoàn toàn tự phát','Sự may mắn','Không bao giờ xảy ra'],a:0,e:'Trong tự nhiên cái mới xuất hiện tự phát; trong xã hội gắn với hoạt động có ý thức của con người.'},
+  {ty:'tf',q:'Số lần phủ định trong một chu kỳ luôn đúng bằng hai.',a:false,e:'Sai. Ít nhất là hai, có thể nhiều hơn.'},
+  {ty:'tf',q:'Sự phát triển diễn ra quanh co, phức tạp, có thể thụt lùi tương đối.',a:true,e:'Đúng. Phát triển không thẳng tắp.'},
+  {ty:'tf',q:'Cái mới vừa ra đời luôn mạnh hơn cái cũ ngay lập tức.',a:false,e:'Sai. Có thời gian cái cũ còn mạnh hơn, nên cần ủng hộ cái mới.'},
+  {ty:'tf',q:'Phủ định của phủ định hoàn thành một chu kỳ và tạo điểm xuất phát cho chu kỳ tiếp theo.',a:true,e:'Đúng.'},
+  {ty:'or',q:'Sắp xếp nội dung quy luật theo đúng trình tự:',o:['Sự vật tự khẳng định, chứa các mặt đối lập','Các mặt đối lập đấu tranh, sự vật mới phủ định cái ban đầu','Sự vật mới tự phủ định, dường như lặp lại cái ban đầu ở trình độ cao hơn','Tiếp tục qua các vòng khâu, từ thấp lên cao, vô tận'],e:'Khẳng định, phủ định lần 1, phủ định của phủ định, rồi các vòng tiếp theo.',must:true},
+  {ty:'or',q:"Sắp xếp chu kỳ T – H – T':",o:['T: 100 triệu tiền','H: mua tư liệu sản xuất và sức lao động','Sản xuất ra hàng hóa mới','T\': thu về 120 triệu'],e:"Tiền chuyển thành hàng hóa, rồi quay về tiền nhiều hơn."}]}];
+const TYPE={mc:'Trắc nghiệm',tf:'Đúng hay sai?',so:'Phân loại',or:'Sắp xếp thứ tự'};
+const PER=6;
+let G=null,timerRAF=null;
+
+function buildRun(){
+  return R.map(r=>{const must=r.pool.filter(q=>q.must),rest=shuffle(r.pool.filter(q=>!q.must));return shuffle(must.concat(rest.slice(0,PER-must.length)))});
+}
+function showLobby(){
+  stopTimer();clearInterval(mTimer);
+  $('#lobby').style.display='block';$('#climbArena').style.display='none';$('#matchArena').style.display='none';
+  const bc=store('pdpd_climb'),bm=store('pdpd_match');
+  $('#bestClimb').textContent=bc?'Điểm cao nhất: '+bc:'Chưa có điểm. Hãy là người mở đầu.';
+  $('#bestMatch').textContent=bm?'Điểm cao nhất: '+bm:'Chưa có điểm.';
+}
+$$('[data-quit]').forEach(b=>b.addEventListener('click',showLobby));
+
+/* climb */
+const CL={cx:150,R:105,r:24,base:470,rise:140};
+function drawClimb(pos){
+  const t=pos/18*3;let s='';
+  hsegs(0,3.01,CL).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--guide)" stroke-width="${g.f?2.5:1.5}" stroke-dasharray="${g.f?'0':'4 5'}"/>`);
+  const sg=hsegs(0,t,CL);
+  sg.filter(g=>!g.f).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--paddy)" stroke-width="3.5" opacity=".45"/>`);
+  sg.filter(g=>g.f).forEach(g=>s+=`<path d="${g.d}" fill="none" stroke="var(--paddy)" stroke-width="6" stroke-linecap="round"/>`);
+  [1,2,3].forEach(k=>{const p=hp(k,CL);s+=`<circle cx="${p.x}" cy="${p.y}" r="6" fill="${t>=k-1e-3?'var(--grain-bright)':'var(--surface)'}" stroke="var(--ink)" stroke-width="1.5"/><text x="${p.x+12}" y="${p.y-8}" font-size="12" font-weight="600" fill="var(--muted)">Hết vòng ${k}</text>`});
+  const p0=hp(0,CL);s+=`<text x="${p0.x-4}" y="${p0.y+20}" font-size="12" fill="var(--muted)">Xuất phát</text>`;
+  const h=hp(t,CL);s+=`<circle cx="${h.x}" cy="${h.y}" r="11" fill="var(--grain-bright)" stroke="var(--ink)" stroke-width="2"/><ellipse cx="${h.x}" cy="${h.y}" rx="3.5" ry="6" fill="var(--grain)" stroke="var(--ink)" stroke-width="1"/>`;
+  $('#climbSvg').innerHTML=s;
+  $('#climbNote').textContent='Bậc '+(Math.round(pos*2)/2)+'/18';
+}
+function startClimb(){
+  G={qs:buildRun(),r:0,i:0,score:0,streak:0,pos:0,shown:0,correct:0,missed:[]};
+  $('#lobby').style.display='none';$('#climbArena').style.display='block';$('#matchArena').style.display='none';
+  G.drawPos=0;drawClimb(0);updHud();roundIntro();window.scrollTo(0,0);
+}
+$('#startClimb').addEventListener('click',startClimb);
+function updHud(){$('#hRound').textContent=G.r+1;$('#hQ').textContent=Math.min(18,G.shown+1);$('#hScore').textContent=G.score;$('#hStreak').textContent=G.streak}
+function roundIntro(){
+  stopTimer();$('#timerBar').style.transform='scaleX(1)';
+  const r=R[G.r];
+  $('#climbMain').innerHTML=`<div class="overlay"><p class="muted" style="margin:0 0 6px">Vòng ${G.r+1} trên 3</p><h2>${r.name}</h2><p style="margin:10px 0 0">${r.sub}</p><div class="center-actions"><button class="btn grain" id="goRound">Bắt đầu vòng</button></div></div>`;
+  $('#goRound').addEventListener('click',showQ);$('#goRound').focus();
+}
+function stopTimer(){cancelAnimationFrame(timerRAF);timerRAF=null}
+function startTimer(sec,onEnd){
+  stopTimer();const bar=$('#timerBar'),t0=performance.now();
+  G.tLeft=sec;
+  function f(now){const el=(now-t0)/1000,k=Math.max(0,1-el/sec);G.tLeft=sec-el;bar.style.transform=`scaleX(${k})`;bar.classList.toggle('low',k<.25);if(k<=0){stopTimer();onEnd();return}timerRAF=requestAnimationFrame(f)}
+  timerRAF=requestAnimationFrame(f);G.tMax=sec;
+}
+function showQ(){
+  const q=G.qs[G.r][G.i];G.cur={q,done:false};updHud();
+  let h=`<div class="qcard"><div class="qtype">${TYPE[q.ty]}</div><div class="qtext">${esc(q.q)}</div>`;
+  if(q.ty==='mc'){
+    G.cur.ord=shuffle(q.o.map((t,i)=>i));
+    h+='<div class="opts">'+G.cur.ord.map((oi,k)=>`<button class="opt" data-o="${oi}"><span class="k">${'ABCD'[k]}</span><span>${esc(q.o[oi])}</span></button>`).join('')+'</div>';
+  }else if(q.ty==='tf'){
+    h+='<div class="tf"><button class="opt" data-tf="1">Đúng</button><button class="opt" data-tf="0">Sai</button></div>';
+  }else if(q.ty==='so'){
+    G.cur.items=shuffle(q.it.map((x,i)=>i));G.cur.sel={};
+    h+=G.cur.items.map(ii=>`<div class="sort-row" data-row="${ii}"><span>${esc(q.it[ii][0])}</span><div class="seg">${q.b.map((b,bi)=>`<button aria-selected="false" data-ii="${ii}" data-b="${bi}">${esc(b)}</button>`).join('')}</div></div>`).join('');
+    h+='<div class="q-actions"><button class="btn" id="submitQ" disabled>Kiểm tra</button></div>';
+  }else{
+    G.cur.pool=shuffle(q.o.map((t,i)=>i));while(q.o.length>2&&G.cur.pool.every((v,i)=>v===i))G.cur.pool=shuffle(G.cur.pool);G.cur.ans=[];
+    h+='<div class="order-ans" id="oAns"></div><div class="order-pool" id="oPool"></div><div class="q-actions"><button class="btn" id="submitQ" disabled>Kiểm tra</button><button class="btn ghost" id="oReset">Xếp lại</button></div>';
+  }
+  h+='<div id="fb"></div></div>';
+  $('#climbMain').innerHTML=h;
+  if(q.ty==='mc')$$('[data-o]').forEach(b=>b.addEventListener('click',()=>answer(+b.dataset.o===q.a,b)));
+  if(q.ty==='tf')$$('[data-tf]').forEach(b=>b.addEventListener('click',()=>answer((b.dataset.tf==='1')===q.a,b)));
+  if(q.ty==='so'){
+    $$('[data-ii]').forEach(b=>b.addEventListener('click',()=>{if(G.cur.done)return;const ii=+b.dataset.ii;G.cur.sel[ii]=+b.dataset.b;$$(`[data-ii="${ii}"]`).forEach(x=>x.setAttribute('aria-selected',x===b));$('#submitQ').disabled=Object.keys(G.cur.sel).length<q.it.length}));
+    $('#submitQ').addEventListener('click',()=>{let ok=true;q.it.forEach((x,ii)=>{const r=G.cur.sel[ii]===x[1];if(!r)ok=false;$(`[data-row="${ii}"]`).classList.add(r?'right':'wrong')});answer(ok)});
+  }
+  if(q.ty==='or'){renderOrder();$('#oReset').addEventListener('click',()=>{if(G.cur.done)return;G.cur.ans=[];renderOrder()});
+    $('#submitQ').addEventListener('click',()=>{const ok=G.cur.ans.every((v,i)=>v===i);$('#oAns').innerHTML=G.cur.ans.map((v,i)=>`<div class="oitem ${v===i?'right':'wrong'}"><span class="k">${i+1}</span>${esc(q.o[v])}</div>`).join('');$('#oPool').innerHTML=ok?'':'<p class="muted" style="margin:4px 0 0;font-size:14px">Thứ tự đúng:</p>'+q.o.map((t,i)=>`<div class="oitem right"><span class="k">${i+1}</span>${esc(t)}</div>`).join('');answer(ok)});}
+  startTimer(q.ty==='mc'||q.ty==='tf'?25:45,()=>answer(false,null,true));
+}
+function renderOrder(){
+  const q=G.cur.q;
+  $('#oAns').innerHTML=G.cur.ans.map((v,i)=>`<button class="oitem" data-rm="${i}"><span class="k">${i+1}</span>${esc(q.o[v])}</button>`).join('');
+  $('#oPool').innerHTML=G.cur.pool.filter(v=>!G.cur.ans.includes(v)).map(v=>`<button class="oitem" data-add="${v}">${esc(q.o[v])}</button>`).join('');
+  $$('[data-add]').forEach(b=>b.addEventListener('click',()=>{G.cur.ans.push(+b.dataset.add);renderOrder()}));
+  $$('[data-rm]').forEach(b=>b.addEventListener('click',()=>{G.cur.ans.splice(+b.dataset.rm,1);renderOrder()}));
+  $('#submitQ').disabled=G.cur.ans.length<q.o.length;
+}
+function answer(ok,btn,timeout){
+  if(G.cur.done)return;G.cur.done=true;stopTimer();
+  const q=G.cur.q;
+  $$('#climbMain button').forEach(b=>{if(b.id!=='nextQ')b.disabled=true});
+  if(q.ty==='mc'){$$('[data-o]').forEach(b=>{if(+b.dataset.o===q.a)b.classList.add('right')});if(!ok&&btn)btn.classList.add('wrong')}
+  if(q.ty==='tf'){$$('[data-tf]').forEach(b=>{if((b.dataset.tf==='1')===q.a)b.classList.add('right')});if(!ok&&btn)btn.classList.add('wrong')}
+  if(q.ty==='or'&&timeout){$('#oPool').innerHTML='<p class="muted" style="margin:4px 0 0;font-size:14px">Thứ tự đúng:</p>'+q.o.map((t,i)=>`<div class="oitem right"><span class="k">${i+1}</span>${esc(t)}</div>`).join('')}
+  if(q.ty==='so'&&timeout){q.it.forEach((x,ii)=>{const row=$(`[data-row="${ii}"]`);row.classList.add(G.cur.sel[ii]===x[1]?'right':'wrong');row.querySelector('span').textContent=x[0]+' → '+q.b[x[1]]})}
+  const from=G.pos;let gain=0;
+  if(ok){G.streak++;G.correct++;gain=100+Math.round(Math.max(0,G.tLeft)/G.tMax*50)+(G.streak>1?(G.streak-1)*20:0);G.score+=gain;G.pos=Math.min(18,G.pos+1)}
+  else{G.streak=0;G.missed.push(q);const floor=G.r*PER;G.pos=Math.max(floor,G.pos-.5);if(from>floor)toast('Thụt lùi tương đối! Phát triển đâu có thẳng tắp.')}
+  animate(from,G.pos,600,v=>drawClimb(v));
+  G.shown++;updHud();$('#hQ').textContent=Math.min(18,G.shown);
+  const last=G.i===PER-1;
+  $('#fb').innerHTML=`<div class="feedback ${ok?'good':'bad'}"><strong>${ok?'Chính xác! +'+gain+' điểm'+(G.streak>1?' (chuỗi '+G.streak+')':''):(timeout?'Hết giờ.':'Chưa đúng.')}</strong><p>${esc(q.e)}</p><button class="btn" id="nextQ">${last?(G.r===2?'Xem kết quả':'Sang vòng tiếp'):'Câu tiếp theo'}</button></div>`;
+  $('#nextQ').addEventListener('click',next);$('#nextQ').focus({preventScroll:false});
+}
+function next(){
+  G.i++;
+  if(G.i>=PER){G.i=0;G.r++;if(G.r>=3)return finish();
+    G.pos=Math.max(G.pos,G.r*PER);drawClimb(G.pos);roundIntro();return}
+  showQ();
+}
+function finish(){
+  stopTimer();const prev=+(store('pdpd_climb')||0),best=G.score>prev;if(best)store('pdpd_climb',G.score);
+  const msg=G.correct>=16?'Bạn đã hoàn thành trọn ba vòng xoáy. Nắm chắc quy luật rồi!':G.correct>=11?'Khá vững. Xem lại những câu sai bên dưới để lên tầng cao hơn.':'Mỗi lần sai cũng là một lần phủ định để tiến lên. Đọc lại phần lý thuyết rồi thử lần nữa nhé.';
+  $('#climbMain').innerHTML=`<div class="overlay"><p class="muted" style="margin:0">Tổng điểm</p><div class="big">${G.score}</div><p style="margin:10px 0 0">Đúng ${G.correct}/18 câu.${best?' <b>Kỷ lục mới!</b>':''}</p><p class="muted">${msg}</p>
+  ${G.missed.length?'<div class="review">'+G.missed.map(q=>`<div><b>${esc(q.q)}</b>${esc(q.e)}</div>`).join('')+'</div>':''}
+  <div class="center-actions"><button class="btn grain" id="again">Chơi lại</button><a class="btn ghost" href="#ly-thuyet" style="text-decoration:none">Xem lại lý thuyết</a></div></div>`;
+  $('#again').addEventListener('click',startClimb);$('#timerBar').style.transform='scaleX(0)';
+}
+
+/* match */
+const PAIRS=[
+ ['Phủ định biện chứng','Tự phủ định, tự phát triển của sự vật, hiện tượng'],
+ ['Tính khách quan','Nguồn gốc ở mâu thuẫn bên trong sự vật'],
+ ['Tính phổ biến','Diễn ra trong tự nhiên, xã hội và tư duy'],
+ ['Tính đa dạng','Thể hiện ở nội dung và hình thức của phủ định'],
+ ['Kế thừa biện chứng','Giữ có chọn lọc, cải tạo, bỏ cái lỗi thời'],
+ ['Kế thừa siêu hình','Giữ lại nguyên si cái cũ'],
+ ['Đường xoáy ốc','Lặp lại nhưng ở trình độ cao hơn'],
+ ['Phủ định sạch trơn','Vứt bỏ hoàn toàn cái cũ, coi thường quá khứ']];
+let M=null,mTimer=null;
+function startMatch(){
+  M={sel:null,done:0,miss:0,t0:Date.now()};
+  $('#lobby').style.display='none';$('#matchArena').style.display='block';$('#climbArena').style.display='none';
+  const L=shuffle(PAIRS.map((p,i)=>i)),Rr=shuffle(PAIRS.map((p,i)=>i));
+  $('#matchMain').innerHTML=`<div class="match-grid"><div class="match-col terms">${L.map(i=>`<button class="mcard" data-l="${i}">${esc(PAIRS[i][0])}</button>`).join('')}</div><div class="match-col">${Rr.map(i=>`<button class="mcard" data-r="${i}">${esc(PAIRS[i][1])}</button>`).join('')}</div></div>`;
+  $$('[data-l]').forEach(b=>b.addEventListener('click',()=>{if(b.classList.contains('done'))return;$$('[data-l]').forEach(x=>x.classList.remove('sel'));b.classList.add('sel');M.sel=+b.dataset.l}));
+  $$('[data-r]').forEach(b=>b.addEventListener('click',()=>{
+    if(b.classList.contains('done'))return;
+    if(M.sel===null){toast('Chọn một khái niệm ở cột trái trước.');return}
+    const l=$(`[data-l="${M.sel}"]`);
+    if(+b.dataset.r===M.sel){l.classList.remove('sel');l.classList.add('done');b.classList.add('done');l.disabled=b.disabled=true;M.done++;M.sel=null;$('#mDone').textContent=M.done;if(M.done===8)endMatch()}
+    else{M.miss++;$('#mMiss').textContent=M.miss;b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake')}
+  }));
+  $('#mDone').textContent=0;$('#mMiss').textContent=0;$('#mTime').textContent=0;
+  clearInterval(mTimer);mTimer=setInterval(()=>$('#mTime').textContent=Math.floor((Date.now()-M.t0)/1000),250);
+  window.scrollTo(0,0);
+}
+function endMatch(){
+  clearInterval(mTimer);const sec=Math.floor((Date.now()-M.t0)/1000),score=Math.max(100,1200-sec*8-M.miss*60);
+  const prev=+(store('pdpd_match')||0),best=score>prev;if(best)store('pdpd_match',score);
+  setTimeout(()=>{$('#matchMain').innerHTML=`<div class="overlay"><p class="muted" style="margin:0">Điểm</p><div class="big">${score}</div><p style="margin:10px 0 0">${sec} giây, ${M.miss} lần sai.${best?' <b>Kỷ lục mới!</b>':''}</p><div class="center-actions"><button class="btn paddy" id="againM">Chơi lại</button><button class="btn ghost" id="toClimb">Thử leo xoáy ốc</button></div></div>`;
+  $('#againM').addEventListener('click',startMatch);$('#toClimb').addEventListener('click',startClimb)},500);
+}
+$('#startMatch').addEventListener('click',startMatch);
+
+route();showLobby();
+})();
+</script>
+</body>
+</html>
